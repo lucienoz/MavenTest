@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.atguigu</groupId>
+    <artifactId>MavenTest</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>MavenDay01</module> <!--统一管理的子model-->
+        <module>MavenDay02</module>
+        <module>JDBCConnectPoolTest</module>
+        <module>HDFSClientDemo</module>
+        <module>MRWordCountDemo</module>
+        <module>HiveFunctionTest</module>
+        <module>GuliETL</module>
+        <module>FlumeTest</module>
+        <module>KafkaClient</module>
+        <module>HBaseAPITest</module>
+        <module>PhoenixJDBCThinClient</module>
+        <module>Testt</module>
+        <module>PhoenixThickClient</module>
+        <module>ScalaTest</module>
+        <module>SparkTest</module>
+    </modules>
+
+
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId> <!--所有子model（项目）都存在依赖的包-->
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+    </dependencies>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <junit.version>4.13.2</junit.version>
+    </properties>
+
+</project>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="PhoenixThickClient" />
+        <module name="HBaseAPITest" />
+        <module name="SparkTest" />
+        <module name="Testt" />
+        <module name="HDFSClientDemo" />
+        <module name="ScalaTest" />
+        <module name="PhoenixJDBCThinClient" />
+        <module name="MavenDay01" />
+        <module name="MavenDay02" />
+        <module name="GuliETL" />
+        <module name="JDBCConnectPoolTest" />
+        <module name="KafkaClient" />
+        <module name="HiveFunctionTest" />
+        <module name="FlumeTest" />
+        <module name="MRWordCountDemo" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="PhoenixJDBCThickClient" target="8" />
+      <module name="PhoenixJDBCThickClient2" target="8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,4 @@
+Hello Scala Spark Kafka Flume,2
+Hello Scala Hadoop,2
+Hello Scala Spark Kafka Flink,2
+Hello Scala Hive,2

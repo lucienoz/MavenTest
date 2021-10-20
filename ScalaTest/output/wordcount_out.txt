@@ -1,0 +1,5 @@
+world	1
+hadoop	2
+spark	3
+scala	3
+Hello	4
