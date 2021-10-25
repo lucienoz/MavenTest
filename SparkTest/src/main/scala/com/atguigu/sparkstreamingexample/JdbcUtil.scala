@@ -1,8 +1,9 @@
 package com.atguigu.sparkstreamingexample
 
-import com.alibaba.druid.pool.DruidDataSource
+import com.alibaba.druid.pool.{DruidDataSource, DruidDataSourceFactory}
 
-import java.sql.{Connection, PreparedStatement}
+import java.io.Closeable
+import java.sql.{Connection, PreparedStatement, ResultSet}
 import java.util.Properties
 import javax.sql.DataSource
 
@@ -17,8 +18,7 @@ object JdbcUtil {
 
 	private val dataSource : DataSource = init ()
 
-	def  init() : DataSource ={
-		val source : DruidDataSource = new DruidDataSource ()
+	private def  init() : DataSource ={
 		val properties = new Properties ()
 		val prop : Properties = PropertiesUtil.load ( "config.properties" )
 		properties.setProperty("url",prop.getProperty("jdbc.url"))
@@ -26,8 +26,7 @@ object JdbcUtil {
 		properties.setProperty("password",prop.getProperty("jdbc.password"))
 		properties.setProperty("maxActive",prop.getProperty("jdbc.datasource.size"))
 
-		source.setConnectProperties(properties)
-		source
+		DruidDataSourceFactory.createDataSource(properties)
 	}
 
 	def getConnection : Connection ={
@@ -53,7 +52,7 @@ object JdbcUtil {
 	}
 
 	def executeBatchUpdate(connection: Connection,sql:String,arrParams: Iterable[Array[Any]]) : Array[Int] ={
-		var rtns : Array[Int] = Array[Int]
+		var rtns : Array[Int] = Array[Int]()
 		try {
 			connection.setAutoCommit ( false )
 			val preparedStatement : PreparedStatement = connection.prepareStatement ( sql )
@@ -72,6 +71,48 @@ object JdbcUtil {
 			case e:Exception => e.printStackTrace()
 		}
 		rtns
+	}
+
+	case class JDBCResultSet(preparedStatement:PreparedStatement,resultSet :ResultSet) extends Closeable{
+		override def close() : Unit = {
+			resultSet.close()
+			preparedStatement.close()
+		}
+	}
+
+	def executeQuery(connection: Connection,sql:String,arrParams: Array[Any]) : JDBCResultSet ={
+		try {
+			val preparedStatement : PreparedStatement = connection.prepareStatement ( sql )
+			var i : Int = 0
+			for (elem <- arrParams) {
+				i += 1
+				preparedStatement.setObject ( i, elem )
+			}
+			val resultSet : ResultSet = preparedStatement.executeQuery ()
+			JDBCResultSet(preparedStatement,resultSet)
+		} catch {
+			case e:Exception => e.printStackTrace()
+			null
+		}
+	}
+
+	def isExists(connection: Connection,sql:String,arrParams: Array[Any]) : Boolean ={
+		var flag : Boolean = false
+		try {
+			val preparedStatement : PreparedStatement = connection.prepareStatement ( sql )
+			var i : Int = 0
+			for (elem <- arrParams) {
+				i += 1
+				preparedStatement.setObject ( i, elem )
+			}
+			val resultSet : ResultSet = preparedStatement.executeQuery ()
+			flag = resultSet.next ()
+			preparedStatement.close()
+			resultSet.close()
+		} catch {
+			case e:Exception => e.printStackTrace()
+		}
+		flag
 	}
 
 
