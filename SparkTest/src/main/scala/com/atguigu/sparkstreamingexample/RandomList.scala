@@ -26,6 +26,28 @@ object RandomList {
 		seq
 	}
 
+
+	class RandomNumsRegular extends RandomProtocol{
+		/**
+		 * generate Random Int number
+		 * @param scope max Random Value you can get
+		 * @return Random num between <code>1</code> and <code> scope </code>
+		 */
+		override def getRandomNum(scope:Int) : Int = {
+			(Math.random()*scope+1).toInt
+		}
+	}
+
+
 	//User - Product - City 进行zip
+
+	def main(args : Array[String]) : Unit = {
+		val regular : RandomNumsRegular = new RandomNumsRegular ()
+		while (true) {
+			println ( regular.getRandomNum ( 10 ) )
+		}
+	}
+
+
 
 }

@@ -1,6 +1,9 @@
 package com.atguigu.sparkstreamingexample
 
+import org.apache.spark.sql.execution.streaming.FileStreamSource.Timestamp
+
 import java.sql.Connection
+import java.util.Date
 import scala.collection.mutable.ListBuffer
 
 /**
@@ -14,7 +17,7 @@ object MockerRealTime {
 
 	private val cityInfoes : ListBuffer[CityInfo] = setCityInfos
 	private val productInfos : ListBuffer[ProductInfo] = setProductInfos
-	private val userInfoes : ListBuffer[UserInfo] = new ListBuffer[UserInfo]()
+	private val userInfoes : ListBuffer[UserInfo] = setUserInfoes
 
 	private def setCityInfos:ListBuffer[CityInfo]={
 		val conn : Connection = JdbcUtil.getConnection
@@ -73,6 +76,36 @@ object MockerRealTime {
 	 * 格式 ：timestamp area city userid adid
 	 * 某个时间点 某个地区 某个城市 某个用户 某个广告
 	 */
+
+	def mockerRealTimeData={
+		val rp : RandomProtocol = new RandomList.RandomNumsRegular ()
+
+		val listSize : Int = rp.getRandomNum ( 30 )
+
+		println ( userInfoes.size )
+
+
+		val cityInfoesListIndex : Seq[Int] = RandomList.getRandomList ( cityInfoes.size, listSize)
+		val productInfosListIndex : Seq[Int] = RandomList.getRandomList ( productInfos.size, listSize)
+		val userInfoesListIndex : Seq[Int] = RandomList.getRandomList ( userInfoes.size, listSize)
+
+		val mockIndexList : Seq[(Int, Int, Int)] = cityInfoesListIndex.zip ( userInfoesListIndex ).zip ( productInfosListIndex ).map ( tuple => (tuple._1._1, tuple._1._2, tuple._2) )
+
+		for ((city,user,product) <- mockIndexList) {
+			val cityInfo : CityInfo = cityInfoes ( city )
+			val userInfo : UserInfo = userInfoes ( user )
+			val productInfo : ProductInfo = productInfos ( product )
+			val timestamp : Timestamp = System.currentTimeMillis ()
+
+
+			println ( timestamp.toString + " " + cityInfo.area + " " + cityInfo.cityName + " " + userInfo.userName + " " + productInfo.productName )
+		}
+
+	}
+
+	def main(args : Array[String]) : Unit = {
+		mockerRealTimeData
+	}
 
 
 
