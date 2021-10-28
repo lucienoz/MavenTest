@@ -1,5 +1,6 @@
 package com.atguigu.sparkstreamingexample
 
+import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import org.apache.spark.sql.execution.streaming.FileStreamSource.Timestamp
 
 import java.sql.Connection
@@ -77,13 +78,10 @@ object MockerRealTime {
 	 * 某个时间点 某个地区 某个城市 某个用户 某个广告
 	 */
 
-	def mockerRealTimeData={
+	def mockerRealTimeData : Seq[String] ={
 		val rp : RandomProtocol = new RandomList.RandomNumsRegular ()
 
 		val listSize : Int = rp.getRandomNum ( 30 )
-
-		println ( userInfoes.size )
-
 
 		val cityInfoesListIndex : Seq[Int] = RandomList.getRandomList ( cityInfoes.size, listSize)
 		val productInfosListIndex : Seq[Int] = RandomList.getRandomList ( productInfos.size, listSize)
@@ -91,20 +89,26 @@ object MockerRealTime {
 
 		val mockIndexList : Seq[(Int, Int, Int)] = cityInfoesListIndex.zip ( userInfoesListIndex ).zip ( productInfosListIndex ).map ( tuple => (tuple._1._1, tuple._1._2, tuple._2) )
 
-		for ((city,user,product) <- mockIndexList) {
+		for ((city,user,product) <- mockIndexList) yield{
 			val cityInfo : CityInfo = cityInfoes ( city )
 			val userInfo : UserInfo = userInfoes ( user )
 			val productInfo : ProductInfo = productInfos ( product )
 			val timestamp : Timestamp = System.currentTimeMillis ()
 
+			timestamp + " " + cityInfo.area + " " + cityInfo.cityName + " " + userInfo.userName + " " + productInfo.productName
 
-			println ( timestamp.toString + " " + cityInfo.area + " " + cityInfo.cityName + " " + userInfo.userName + " " + productInfo.productName )
 		}
 
 	}
 
 	def main(args : Array[String]) : Unit = {
-		mockerRealTimeData
+		val kafkaProducer : KafkaProducer[String, String] = KafkaUtil.getKafkaProducer
+		while (true){
+				Thread.sleep(1000)
+				mockerRealTimeData.foreach(line=>kafkaProducer.send(new ProducerRecord[String,String]("log-channel",line)))
+		}
+
+
 	}
 
 
